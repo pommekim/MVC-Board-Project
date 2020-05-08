@@ -9,10 +9,9 @@ import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
-import lab.web.domain.MemberVO; //???
 
 public class MemberDAO {
-	
+
 	static {
 		try {
 			DriverManager.registerDriver(new oracle.jdbc.OracleDriver());
@@ -21,7 +20,7 @@ public class MemberDAO {
 			System.out.println("드라이버 로드 실패");
 		}
 	}
-	
+
 	private Connection getConnection() {
 		DataSource ds = null;
 		Connection con = null;
@@ -34,15 +33,15 @@ public class MemberDAO {
 		}
 		return con;
 	}
-	
+
 	private void closeConnection(Connection con) {
 		if(con != null) {
 			try {con.close();} catch(SQLException e) {}
 		}
 	}
-	
-	
-	
+
+
+
 	//회원가입 메서드
 	public void insert(MemberVO member) {
 		Connection con = null;
@@ -67,8 +66,8 @@ public class MemberDAO {
 			closeConnection(con);
 		}
 	}
-	
-	//
+
+	//회원정보조회 메서드
 	public MemberVO selectMember(String userid) {
 		Connection con = null;
 		MemberVO member = new MemberVO();
@@ -94,6 +93,7 @@ public class MemberDAO {
 		return member;
 	}
 	
+    //회원정보수정 메서드
 	public void updateMember(MemberVO member) {
 		Connection con = null;
 		try {
@@ -108,12 +108,14 @@ public class MemberDAO {
 			stmt.executeUpdate();
 		} catch(SQLException e) {
 			e.printStackTrace();
-			throw new RuntimeException("MemberDAO.selectMember예외발생-콘솔확인");
+			throw new RuntimeException("MemberDAO.updateMember예외발생-콘솔확인");
 		} finally {
 			closeConnection(con);
 		}
 	}
 	
+	//회원비밀번호를 가져오는 메서드
+	//회원정보삭제에 사용
 	public String getPassword(String userid) {
 		String pw = "";
 		Connection con = null;
@@ -133,8 +135,9 @@ public class MemberDAO {
 			closeConnection(con);
 		}
 		return pw;
- 	}
-	
+	}
+
+	//회원정보삭제 메서드
 	public void deleteMember(String userid, String password) {
 		Connection con = null;
 		String pw = "";
@@ -172,10 +175,9 @@ public class MemberDAO {
 			closeConnection(con);
 		}
 	}
-	
-	
-	
-	
-	
 
+
+
+	
+	
 }

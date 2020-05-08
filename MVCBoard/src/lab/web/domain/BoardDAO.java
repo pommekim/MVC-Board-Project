@@ -44,6 +44,7 @@ public class BoardDAO {
 	
 	
 	
+	//글을 삽입하기 위한 메서드
 	public void insertArticle(BoardVO board) {
 		Connection con = null;
 		String sql1 = "select nvl(max(bbsno), 0) from board";
@@ -74,6 +75,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//글 목록을 가져오는 메서드
 	public Collection<BoardVO> selectArticleList(int page) {
 		Connection con = null;
 		ArrayList<BoardVO> list = new ArrayList<>();
@@ -110,6 +112,7 @@ public class BoardDAO {
 		return list;
 	}
 	
+	//글의 상세내용을 보여주기 위해 게시글 한개만 가져오는 메서드
 	public BoardVO selectArticle(int bbsno) {
 		Connection con = null;
 		BoardVO board = null;
@@ -144,6 +147,7 @@ public class BoardDAO {
 		return board;
 	}
 	
+	//글을 클릭할 경우 조회수를 늘리기 위한 메서드
 	public void updateReadCount(int bbsno) {
 		Connection con = null;
 		String sql = "update board set readcount=readcount+1 where bbsno=?";
@@ -160,6 +164,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//글 삭제시 비밀번호를 체크할 메서드
 	public String getPassword(int bbsno) {
 		Connection con = null;
 		String password = "";
@@ -181,6 +186,7 @@ public class BoardDAO {
 		return password;
 	}
 	
+	//댓글을 달 경우 답변글을 작성하는 메서드
 	public void replyArticle(BoardVO board) {
 		Connection con = null;
 		PreparedStatement stmt = null;
@@ -226,6 +232,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//글과 답변 모두를 삭제하는 메서드
 	public void deleteArticle(int bbsno, int replynumber) {
 		String sql = "";
 		Connection con = null;
@@ -247,6 +254,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//글의 총 갯수를 세어주는 메서드
 	public int selectTotalBbsCount() {
 		Connection con = null;
 		String sql = "select count(bbsno) from board";
@@ -265,6 +273,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//글을 수정하는 메서드
 	public void updateArticle(BoardVO board) {
 		Connection con = null;
 		String sql = "update board set subject=?, content=?, writedate=SYSDATE where bbsno=?";
@@ -283,6 +292,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//마이페이지에서 내가 쓴 글이 총 몇개인지를 확인하는 메서드
 	public int selectCount(String userid) {
 		Connection con = null;
 		String sql = "select count(bbsno) from board where userid=?";
@@ -302,6 +312,7 @@ public class BoardDAO {
 		}
 	}
 	
+	//내가 쓴 글들만 가져오는 메서드
 	public Collection<BoardVO> memberList(String userid, int page) {
 		Connection con = null;
 		String sql = "select rnum, bbsno, name, subject, readcount, writedate "
@@ -340,12 +351,6 @@ public class BoardDAO {
 		}
 		return list;
 	}
-	
-	
-	
-	
-	
-	
 	
 	
 	
