@@ -195,7 +195,7 @@ public class BoardDAO {
 			con = getConnection();
 			con.setAutoCommit(false);
 			
-			String sql1 = "update board set replynumber=replynumber+1 where masterid=? and replynumber=?";
+			String sql1 = "update board set replynumber=replynumber+1 where masterid=? and replynumber>?";
 			stmt = con.prepareStatement(sql1);
 			stmt.setInt(1, board.getMasterId());
 			stmt.setInt(2, board.getReplyNumber());
