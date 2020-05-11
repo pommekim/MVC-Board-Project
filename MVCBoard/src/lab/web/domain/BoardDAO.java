@@ -84,8 +84,8 @@ public class BoardDAO {
 				+ "from (select bbsno, name, subject, writedate, readcount "
 				+ "from board b "
 				+ "join member m on b.userid=m.userid "
-				+ "order by masterid desc, replynumber, replystep)) "
-				+ "where rnum between ? and ?";
+				+ "order by masterid desc, replynumber, replystep)) " //어떤 기준으로 정렬하고 있는가!!!
+				+ "where rnum between ? and ?"; //rnum을 몇 번부터 몇 번까지 정의할 것인가
 		int start = (page-1) * 10 + 1;
 		int end = start + 9;
 		try {

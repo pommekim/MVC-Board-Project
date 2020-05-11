@@ -56,7 +56,7 @@ public class MemberDAO {
 			stmt.setString(5, member.getAddress());
 			stmt.executeUpdate();
 		} catch(SQLException e) {
-			if(e.getMessage().contains("무결성")) {
+			if(e.getMessage().contains("무결성")) { //or 00001 or PK
 				throw new RuntimeException("아이디가 중복됩니다.");
 			} else {
 				e.printStackTrace();
@@ -104,8 +104,9 @@ public class MemberDAO {
 			stmt.setString(2, member.getPassword());
 			stmt.setString(3, member.getEmail());
 			stmt.setString(4, member.getAddress());
-			stmt.setString(5, member.getName());
+			stmt.setString(5, member.getUserid());
 			stmt.executeUpdate();
+			//로그인만 제대로 되어 있다면 에러가 날 일이 없기 때문에 오류 검사를 안해도 됨
 		} catch(SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException("MemberDAO.updateMember예외발생-콘솔확인");
@@ -152,17 +153,25 @@ public class MemberDAO {
 				pw = rs.getString("password");
 			} else {
 				throw new RuntimeException("아이디가 잘못 입력되었습니다.");
+				
 			} if(pw.equals(password)) {
 				try {
 					String sql2 = "delete from board where masterid in "
 							+ "(select masterid from board where userid=?) and "
 							+ "(replynumber>0 or userid=?)";
+					//내 글은 모두 삭제 + 내가 쓴 댓글만 삭제
 					stmt = con.prepareStatement(sql2);
 					stmt.setString(1, userid);
 					stmt.executeUpdate();
+					
+					String sql3 = "delete from member where userid=?";
+					stmt = con.prepareStatement(sql3);
+					stmt.setString(1, userid);
+					stmt.executeUpdate();
+					
 					con.commit(); //커밋 시켜주기
 				} catch(SQLException e) {
-					con.rollback();
+					con.rollback(); //되돌리기
 					throw new RuntimeException("삭제가 되지 않았습니다: "+e.getMessage());
 				}
 			} else {
