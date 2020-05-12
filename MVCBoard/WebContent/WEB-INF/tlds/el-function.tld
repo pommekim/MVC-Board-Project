@@ -8,7 +8,7 @@ version="2.0">
 <short-name>Mceil</short-name>
 <function>
 	<description>숫자 올림</description>
-	<name>ElCeil</name>
+	<name>ElCeil</name> <!-- 우리가 호출할 이름으로 써주어야 함 -->
 	<function-class>lab.web.el.CeilEl</function-class>
 	<function-signature>double pageCeil(double)</function-signature>
 </function>

@@ -196,12 +196,14 @@ public class BoardDAO {
 			con.setAutoCommit(false);
 			
 			String sql1 = "update board set replynumber=replynumber+1 where masterid=? and replynumber>?";
+			//1. 나한테 달려있던 댓글의 순서를 일단 바꿔주기 (기존 댓글 번호에 +1)
 			stmt = con.prepareStatement(sql1);
 			stmt.setInt(1, board.getMasterId());
 			stmt.setInt(2, board.getReplyNumber());
 			stmt.executeUpdate();
 			
 			String sql2 = "select max(bbsno) from board";
+			//2. 댓글은 원본 글이 없으면 못 달리므로 nvl을 빼버린거임
 			stmt = con.prepareStatement(sql2);
 			rs = stmt.executeQuery();
 			if(rs.next()) {
@@ -209,6 +211,7 @@ public class BoardDAO {
 			}
 			
 			String sql3 = "insert into board values (?,?,?,?,?,SYSDATE,?,0,?,?)";
+			//3. 댓글 삽입
 			stmt = con.prepareStatement(sql3);
 			stmt.setInt(1, board.getBbsno());
 			stmt.setString(2, board.getUserId());
@@ -216,14 +219,14 @@ public class BoardDAO {
 			stmt.setString(4, board.getSubject());
 			stmt.setString(5, board.getContent());
 			stmt.setInt(6, board.getMasterId());
-			stmt.setInt(7, board.getReplyNumber()+1);
+			stmt.setInt(7, board.getReplyNumber()+1); //기존 글보다 +1을 해줘야 댓글로 표현 가능
 			stmt.setInt(8, board.getReplyStep()+1);
 			stmt.executeUpdate();
 			
-			con.commit();
+			con.commit(); //3개의 쿼리가 모두 정상 실행되면 커밋!
 		} catch(Exception e) {
 			try {
-				con.rollback();
+				con.rollback(); //정상 실행이 안되면 롤백!
 			} catch(SQLException e1) {}
 			e.printStackTrace();
 			throw new RuntimeException("BoardDAO.replyArticle예외발생-콘솔확인");
@@ -233,14 +236,14 @@ public class BoardDAO {
 	}
 	
 	//글과 답변 모두를 삭제하는 메서드
-	public void deleteArticle(int bbsno, int replynumber) {
+	public void deleteArticle(int bbsno, int replynumber) { //replynumber를 받아서 댓글인지 아닌지 여부를 가림
 		String sql = "";
 		Connection con = null;
 		try {
 			con = getConnection();
-			if(replynumber>0) {
+			if(replynumber>0) { //0보다 크면 무조건 댓글
 				sql = "delete from board where bbsno=?";
-			} else {
+			} else { //원본 글
 				sql = "delete from board where masterid=?";
 			}
 			PreparedStatement stmt = con.prepareStatement(sql);
