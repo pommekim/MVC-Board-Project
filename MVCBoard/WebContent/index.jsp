@@ -15,7 +15,7 @@
 </td></tr>
 <!-- 본문 표시 코드 -->
 <tr height="500" valign="top">
-<td><h6>게시판에 오신걸 환영합니다.</h6><br>
+<td><h3>게시판에 오신걸 환영합니다.</h3><br>
 </td></tr>
 <tr height="50">
 <td><jsp:include page="/incl/footer.jsp" /> <!-- 푸터 페이지 집어넣기 -->

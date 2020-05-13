@@ -98,7 +98,7 @@ public class MemberDAO {
 		Connection con = null;
 		try {
 			con = getConnection();
-			String sql = "update member set name=?, password=?, email=?, address=? where userid=?";
+			String sql = "update member set name=?, password=?, email=?, address=? where userid=?"; //primary key가 가장 나중!
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, member.getName());
 			stmt.setString(2, member.getPassword());
@@ -144,8 +144,8 @@ public class MemberDAO {
 		String pw = "";
 		try {
 			con = getConnection();
-			con.setAutoCommit(false); //오토커밋 해제 (여러 개의 쿼리문을 실행할 때)
-			String sql = "select password from member where userid=?";
+			con.setAutoCommit(false); //오토커밋 해제, 트랜젝션 상태 (여러 개의 쿼리문을 실행할 때)
+			String sql = "select password from member where userid=?"; //getPassword쿼리는 오토커밋이 되어있는 상태이기 때문에 오류가 발생할 수 있음
 			PreparedStatement stmt = con.prepareStatement(sql);
 			stmt.setString(1, userid);
 			ResultSet rs = stmt.executeQuery();
@@ -159,7 +159,7 @@ public class MemberDAO {
 					String sql2 = "delete from board where masterid in "
 							+ "(select masterid from board where userid=?) and "
 							+ "(replynumber>0 or userid=?)";
-					//내 글은 모두 삭제 + 내가 쓴 댓글만 삭제
+					//내 글과 그 밑에 댓글 모두 삭제 + 내가 쓴 댓글만 삭제
 					stmt = con.prepareStatement(sql2);
 					stmt.setString(1, userid);
 					stmt.executeUpdate();

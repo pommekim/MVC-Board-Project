@@ -47,7 +47,8 @@ public class BoardDAO {
 	//글을 삽입하기 위한 메서드
 	public void insertArticle(BoardVO board) {
 		Connection con = null;
-		String sql1 = "select nvl(max(bbsno), 0) from board";
+		String sql1 = "select nvl(max(bbsno), 0) from board"; //그룹함수에 null값이 들어가면 계산을 못하기 때문에 nvl 사용
+		//count를 안세고 max를 가져오는 이유는 몇 개 있든간에 최신 글을 기준으로 번호를 부여할 것이기 때문 (삭제된 것은 신경쓸 수 없음, 글이 너무 많아서)
 		int bbsno = 0;
 		String sql2 = "insert into board (bbsno, userid, password, subject, "
 				+ "content, writedate, masterid, readcount, replynumber, replystep) "
@@ -57,7 +58,7 @@ public class BoardDAO {
 			PreparedStatement stmt = con.prepareStatement(sql1);
 			ResultSet rs = stmt.executeQuery();
 			rs.next();
-			bbsno = rs.getInt(1)+1;
+			bbsno = rs.getInt(1)+1; //새로 들어갈 게시글에 번호 부여
 			
 			stmt = con.prepareStatement(sql2);
 			stmt.setInt(1, bbsno);
@@ -193,7 +194,7 @@ public class BoardDAO {
 		ResultSet rs = null;
 		try {
 			con = getConnection();
-			con.setAutoCommit(false);
+			con.setAutoCommit(false); //오토커밋 해제
 			
 			String sql1 = "update board set replynumber=replynumber+1 where masterid=? and replynumber>?";
 			//1. 나한테 달려있던 댓글의 순서를 일단 바꿔주기 (기존 댓글 번호에 +1)
@@ -203,7 +204,7 @@ public class BoardDAO {
 			stmt.executeUpdate();
 			
 			String sql2 = "select max(bbsno) from board";
-			//2. 댓글은 원본 글이 없으면 못 달리므로 nvl을 빼버린거임
+			//2. 댓글은 원본 글이 없으면 못 달리므로 nvl을 빼버린거임 (무조건 글이 있음)
 			stmt = con.prepareStatement(sql2);
 			rs = stmt.executeQuery();
 			if(rs.next()) {
@@ -324,11 +325,11 @@ public class BoardDAO {
 				+ "from board b "
 				+ "join member m"
 				+ "on b.userid=m.userid "
-				+ "where b.userid=? order by bbsno desc)) "
+				+ "where b.userid=? order by bbsno desc)) " //userid가 누구인가만 바뀜, 게시글 번호로만 정렬
 				+ "where rnum between ? and ?";
 		
 		ArrayList<BoardVO> list = new ArrayList<>();
-		int start = (page-1) * 20 + 1;
+		int start = (page-1) * 20 + 1; //내가 쓴 글은 20개씩 한페이지에 띄울거임 (원리는 안바뀌기 때문에 숫자만 조절해주면 됨)
 		int end = start + 19;
 		try {
 			con = getConnection();

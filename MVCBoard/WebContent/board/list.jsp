@@ -2,9 +2,9 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="ElCeil" uri="/WEB-INF/tlds/el-function.tld"%>
-<%-- 우리가 만든 메서드를 사용하기 위해서 써주어야 함 --%>
-<%-- uri에는 우리가 만든 tld파일을 적어줘야 함! --%>
-<%-- 이제 우리가 만든 메서드를 prefix에 넣은 이름으로 호출 가능 --%>
+<%-- 커스텀 메서드를 사용하기 위해서 써주어야 함 --%>
+<%-- uri에는 미리 만들어 둔 tld파일의 경로를 적어줘야 함 --%>
+<%-- 커스텀 메서드를 prefix에 넣은 이름으로 호출 가능 --%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -20,10 +20,10 @@
 <tr height="500" valign="top"><td>
 <h3>게시판 목록입니다.</h3>
 <table>
-<c:forEach var="board" items="${list}">
+<c:forEach var="board" items="${list}"> <%--반복문을 통해 게시글 리스트를 띄워주기 --%>
 <tr>
 <td>${board.name}</td> <%-- 이름 --%>
-<td><a href='<c:url value="/Board.do?action=view&bbsno=${board.bbsno}"/>'>${board.subject}</a></td> <%-- 게시글 번호 --%>
+<td><a href='<c:url value="/Board.do?action=view&bbsno=${board.bbsno}"/>'>${board.subject}</a></td> <%-- 게시글 번호, 상세내용으로 들어갈 수 있는 하이퍼링크 걸어주기 --%>
 <td>${board.writeDate}</td> <%-- 작성일 --%>
 <td>${board.readCount}</td> <%-- 조회수 --%>
 </tr>
